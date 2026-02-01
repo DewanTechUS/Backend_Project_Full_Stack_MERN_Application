@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Pro-Tasker API | Backend Test Instructions (<span id="year"></span>)
+    </title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js" defer></script>
+  </head>
+
+  <body>
+    <!-- Background Video -->
+    <video class="bg-video" autoplay muted loop playsinline>
+      <source src="./video/background.mp4" type="video/mp4" />
+    </video>
+    <div class="bg-overlay"></div>
+    <div class="bg-sheen"></div>
+
+    <main class="page">
+      <div class="shell">
+        <header class="hero">
+          <h1>
+            Pro-Tasker API | Backend Test Instructions | (<span id="year"></span
+            >)
+          </h1>
+          <p class="lead">
+            RESTful backend API built with Node.js, Express, and MongoDB. Secure
+            JWT authentication and ownership-based authorization for Projects
+            and nested Tasks.
+          </p>
+          <p class="muted">
+            These instructions demonstrate how to test authentication, project,
+            and task endpoints using a REST client.
+          </p>
+        </header>
+
+        <!-- Author -->
+        <section class="section author-center">
+          <div class="card author-card">
+            <h2 class="author-title">Author</h2>
+            <div class="author-name">Dewan Mahmud (Rocky)</div>
+            <div class="author-links">
+              <a href="https://dewantech.com/" target="_blank" rel="noreferrer"
+                >Website</a
+              >
+              <span class="dot">|</span>
+              <a
+                href="https://github.com/DewanTechUS"
+                target="_blank"
+                rel="noreferrer"
+                >GitHub</a
+              >
+              <span class="dot">|</span>
+              <a
+                href="https://www.linkedin.com/in/dewan-mahmud-a579a0265/"
+                target="_blank"
+                rel="noreferrer"
+                >LinkedIn</a
+              >
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Backend Status</h2>
+          <div class="card">
+            <ul class="bullets">
+              <li>
+                Health check:
+                <code>GET http://localhost:3000/health</code>
+                <span class="dot">|</span>
+                <code>GET /health</code>
+              </li>
+              <li>
+                API base:
+                <code>http://localhost:3000/api</code>
+                <span class="dot">|</span>
+                <code>/api</code>
+              </li>
+            </ul>
+            <p class="ok">Expected: HTTP 200 response from /health</p>
+            <p class="bad">Not expected: 404 or server not responding</p>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Base URL</h2>
+          <div class="card">
+            <ul class="bullets">
+              <li>Root URL: <code>http://localhost:3000/</code></li>
+              <li>API URL: <code>http://localhost:3000/api</code></li>
+            </ul>
+            <p class="muted">
+              If your server uses a different port, replace 3000 with your port.
+            </p>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Postman Testing Steps (12 Total)</h2>
+
+          <div class="step card">
+            <h3>1) Register User A</h3>
+            <ul class="bullets">
+              <li>Method: POST</li>
+              <li>
+                URL: <code>http://localhost:3000/api/auth/register</code>
+                <span class="dot">|</span>
+                <code>/api/auth/register</code>
+              </li>
+              <li>Body: JSON</li>
+            </ul>
+            <pre><code>{
+  "name": "Rocky",
+  "email": "rocky@test.com",
+  "password": "123456"
+}</code></pre>
+            <p class="ok">Expected: HTTP 201 and token returned</p>
+            <p class="bad">Not expected: HTTP 500 or missing token</p>
+          </div>
+
+          <div class="step card">
+            <h3>2) Login User A (save TOKEN_A)</h3>
+            <ul class="bullets">
+              <li>Method: POST</li>
+              <li>
+                URL: <code>http://localhost:3000/api/auth/login</code>
+                <span class="dot">|</span>
+                <code>/api/auth/login</code>
+              </li>
+              <li>Body: JSON</li>
+            </ul>
+            <pre><code>{
+  "email": "rocky@test.com",
+  "password": "123456"
+}</code></pre>
+            <p class="ok">Expected: HTTP 200 and token returned</p>
+            <p class="bad">Not expected: HTTP 401 with valid credentials</p>
+          </div>
+
+          <div class="step card">
+            <h3>3) Protected Route Without Token (security proof)</h3>
+            <ul class="bullets">
+              <li>Method: GET</li>
+              <li>
+                URL: <code>http://localhost:3000/api/projects</code>
+                <span class="dot">|</span>
+                <code>/api/projects</code>
+              </li>
+              <li>No Authorization header</li>
+            </ul>
+            <p class="ok">Expected: HTTP 401 Unauthorized</p>
+            <p class="bad">Not expected: HTTP 200</p>
+          </div>
+
+          <div class="step card">
+            <h3>4) Create Project With TOKEN_A (save PROJECT_ID)</h3>
+            <ul class="bullets">
+              <li>Method: POST</li>
+              <li>
+                URL: <code>http://localhost:3000/api/projects</code>
+                <span class="dot">|</span>
+                <code>/api/projects</code>
+              </li>
+              <li>
+                Headers: <code>Authorization: Bearer TOKEN_A</code>,
+                <code>Content-Type: application/json</code>
+              </li>
+            </ul>
+            <pre><code>{
+  "name": "Rocky Project",
+  "description": "Ownership test project"
+}</code></pre>
+            <p class="ok">Expected: HTTP 201 and project _id returned</p>
+            <p class="bad">Not expected: HTTP 401</p>
+          </div>
+
+          <div class="step card">
+            <h3>5) Get My Projects With TOKEN_A</h3>
+            <ul class="bullets">
+              <li>Method: GET</li>
+              <li>
+                URL: <code>http://localhost:3000/api/projects</code>
+                <span class="dot">|</span>
+                <code>/api/projects</code>
+              </li>
+              <li>Header: <code>Authorization: Bearer TOKEN_A</code></li>
+            </ul>
+            <p class="ok">Expected: HTTP 200 and array of projects you own</p>
+            <p class="bad">Not expected: other users’ projects in the list</p>
+          </div>
+
+          <div class="step card">
+            <h3>6) Get Single Project By ID With TOKEN_A</h3>
+            <ul class="bullets">
+              <li>Method: GET</li>
+              <li>
+                URL: <code>http://localhost:3000/api/projects/PROJECT_ID</code>
+                <span class="dot">|</span>
+                <code>/api/projects/PROJECT_ID</code>
+              </li>
+              <li>Header: <code>Authorization: Bearer TOKEN_A</code></li>
+            </ul>
+            <p class="ok">Expected: HTTP 200 and project object</p>
+            <p class="bad">Not expected: 404 when PROJECT_ID is valid</p>
+          </div>
+
+          <div class="step card">
+            <h3>7) Create Task Under Project With TOKEN_A (save TASK_ID)</h3>
+            <ul class="bullets">
+              <li>Method: POST</li>
+              <li>
+                URL:
+                <code>http://localhost:3000/api/projects/PROJECT_ID/tasks</code>
+                <span class="dot">|</span>
+                <code>/api/projects/PROJECT_ID/tasks</code>
+              </li>
+              <li>Header: <code>Authorization: Bearer TOKEN_A</code></li>
+            </ul>
+            <pre><code>{
+  "title": "Task A1",
+  "description": "Created by User A",
+  "status": "To Do"
+}</code></pre>
+            <p class="ok">Expected: HTTP 201 and task _id returned</p>
+            <p class="bad">Not expected: 404 route not found</p>
+          </div>
+
+          <div class="step card">
+            <h3>8) Get Tasks For Project With TOKEN_A</h3>
+            <ul class="bullets">
+              <li>Method: GET</li>
+              <li>
+                URL:
+                <code>http://localhost:3000/api/projects/PROJECT_ID/tasks</code>
+                <span class="dot">|</span>
+                <code>/api/projects/PROJECT_ID/tasks</code>
+              </li>
+              <li>Header: <code>Authorization: Bearer TOKEN_A</code></li>
+            </ul>
+            <p class="ok">Expected: HTTP 200 and tasks array</p>
+            <p class="bad">Not expected: 403 for the owner</p>
+          </div>
+
+          <div class="step card">
+            <h3>9) Register and Login User B (save TOKEN_B)</h3>
+            <ul class="bullets">
+              <li>Register a second user with a different email</li>
+              <li>Login as the second user and save the returned token</li>
+            </ul>
+
+            <p class="muted"><strong>Register User B</strong></p>
+            <ul class="bullets">
+              <li>Method: POST</li>
+              <li>
+                URL:
+                <code>http://localhost:3000/api/auth/register</code>
+                <span class="dot">|</span>
+                <code>/api/auth/register</code>
+              </li>
+              <li>Body: JSON</li>
+            </ul>
+
+            <pre><code>{
+  "name": "User B",
+  "email": "userb@test.com",
+  "password": "123456"
+}</code></pre>
+
+            <p class="ok">Expected: HTTP 201 and token returned</p>
+
+            <p class="muted"><strong>Login User B</strong></p>
+            <ul class="bullets">
+              <li>Method: POST</li>
+              <li>
+                URL:
+                <code>http://localhost:3000/api/auth/login</code>
+                <span class="dot">|</span>
+                <code>/api/auth/login</code>
+              </li>
+              <li>Body: JSON</li>
+            </ul>
+
+            <pre><code>{
+  "email": "userb@test.com",
+  "password": "123456"
+}</code></pre>
+
+            <p class="ok">
+              Expected: HTTP 200 and token returned (save as TOKEN_B)
+            </p>
+            <p class="bad">Not expected: using the same email as User A</p>
+          </div>
+
+          <div class="step card">
+            <h3>10) User B Tries to Access User A Project (ownership proof)</h3>
+            <ul class="bullets">
+              <li>Method: GET</li>
+              <li>
+                URL: <code>http://localhost:3000/api/projects/PROJECT_ID</code>
+                <span class="dot">|</span>
+                <code>/api/projects/PROJECT_ID</code>
+              </li>
+              <li>Header: <code>Authorization: Bearer TOKEN_B</code></li>
+            </ul>
+            <p class="ok">Expected: HTTP 403 Forbidden</p>
+            <p class="bad">Not expected: HTTP 200</p>
+          </div>
+
+          <div class="step card">
+            <h3>11) User B Tries to Access User A Tasks</h3>
+            <ul class="bullets">
+              <li>Method: GET</li>
+              <li>
+                URL:
+                <code>http://localhost:3000/api/projects/PROJECT_ID/tasks</code>
+                <span class="dot">|</span>
+                <code>/api/projects/PROJECT_ID/tasks</code>
+              </li>
+              <li>Header: <code>Authorization: Bearer TOKEN_B</code></li>
+            </ul>
+            <p class="ok">Expected: HTTP 403 Forbidden</p>
+            <p class="bad">Not expected: HTTP 200</p>
+          </div>
+
+          <div class="step card">
+            <h3>12) Update a Task With TOKEN_A (CRUD proof)</h3>
+            <ul class="bullets">
+              <li>Method: PUT</li>
+              <li>
+                URL:
+                <code
+                  >http://localhost:3000/api/projects/PROJECT_ID/tasks/TASK_ID</code
+                >
+                <span class="dot">|</span>
+                <code>/api/projects/PROJECT_ID/tasks/TASK_ID</code>
+              </li>
+              <li>Header: <code>Authorization: Bearer TOKEN_A</code></li>
+              <li>Body: JSON</li>
+            </ul>
+            <pre><code>{
+  "status": "Done"
+}</code></pre>
+            <p class="ok">Expected: HTTP 200 and updated task returned</p>
+            <p class="bad">Not expected: 403 for the owner</p>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <div class="status">
+            Status: API is running successfully · ©
+            <span id="year">2026</span> Dewan Mahmud
+          </div>
+        </footer>
+      </div>
+    </main>
+  </body>
+</html>
