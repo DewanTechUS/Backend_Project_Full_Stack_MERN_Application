@@ -1,6 +1,7 @@
 // Project model definition 
 // each project is owned by a user
 // we can add more fields as needed
+// for example: dueDate, status, etc.
 const mongoose = require("mongoose");
 
 const projectSchema = new mongoose.Schema(
