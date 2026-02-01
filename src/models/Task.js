@@ -1,6 +1,6 @@
 // Task schema: each task belongs to a project
 // Owner is also stored to simplify authorization checks
-
+// we can add more fields as needed
 const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema(
@@ -19,6 +19,7 @@ const taskSchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true },
     description: { type: String, default: "" },
 
+    
     status: {
       type: String,
       enum: ["To Do", "In Progress", "Done"],
