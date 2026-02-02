@@ -345,5 +345,3 @@ Overall, this project increased my confidence in building secure, maintainable b
 ## Special Thanks
 
 Special thanks to my instructors, mentors, and fellow learners in my **Per Scholas cohort** for their continuous support, feedback, and collaboration. Learning alongside such a motivated group played a meaningful role in the successful completion of this project.
-
-```
