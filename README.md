@@ -2,7 +2,14 @@
 
 ## Author
 
-**Dewan Mahmud (Rocky)**
+**Dewan Mahmud (Rocky)**  
+Backend / Full-Stack Software Engineer | MERN Stack  
+REST APIs • JWT Authentication • MongoDB • Express
+
+Website: https://dewantech.com  
+GitHub: https://github.com/DewanTechUS/Backend_Project_Full_Stack_MERN_Application  
+LinkedIn: https://www.linkedin.com/in/dewan-mahmud-a579a0265/  
+Live Backend (Render): https://backend-project-full-stack-mern.onrender.com
 
 ## Overview
 
@@ -116,8 +123,8 @@ These steps verify **authentication**, **authorization**, and **full CRUD functi
 ```
 
 - **Expected Result:**
- - HTTP **201 Created**
- - JWT token returned
+- HTTP **201 Created**
+- JWT token returned
 
 ### Step 2: Login User A
 
@@ -134,8 +141,8 @@ These steps verify **authentication**, **authorization**, and **full CRUD functi
 ```
 
 - **Expected Result:**
- - HTTP **200 OK**
- - Save the returned token as **TOKEN_A**
+- HTTP **200 OK**
+- Save the returned token as **TOKEN_A**
 
 ### Step 3: Access Protected Route Without Token
 
@@ -144,7 +151,7 @@ These steps verify **authentication**, **authorization**, and **full CRUD functi
 - **Headers:** None (no Authorization token)
 
 - **Expected Result:**
- - HTTP **401 Unauthorized**
+- HTTP **401 Unauthorized**
 
 ### Step 4: Create Project (User A)
 
@@ -165,8 +172,8 @@ These steps verify **authentication**, **authorization**, and **full CRUD functi
 ```
 
 - **Expected Result:**
- - HTTP **201 Created**
- - Save the returned project `_id` as **PROJECT_ID**
+- HTTP **201 Created**
+- Save the returned project `_id` as **PROJECT_ID**
 
 ### Step 5: Get All Projects (User A)
 
@@ -177,8 +184,8 @@ These steps verify **authentication**, **authorization**, and **full CRUD functi
 - `Authorization: Bearer TOKEN_A`
 
 - **Expected Result:**
- - HTTP **200 OK**
- - Only projects owned by **User A** are returned
+- HTTP **200 OK**
+- Only projects owned by **User A** are returned
 
 ### Step 6: Get Single Project by ID (User A)
 
@@ -189,8 +196,8 @@ These steps verify **authentication**, **authorization**, and **full CRUD functi
 - `Authorization: Bearer TOKEN_A`
 
 - **Expected Result:**
- - HTTP **200 OK**
- - Project object returned
+- HTTP **200 OK**
+- Project object returned
 
 ### Step 7: Create Task Under Project (User A)
 
@@ -211,8 +218,8 @@ These steps verify **authentication**, **authorization**, and **full CRUD functi
 ```
 
 - **Expected Result:**
- - HTTP **201 Created**
- - Save the returned task `_id` as **TASK_ID**
+- HTTP **201 Created**
+- Save the returned task `_id` as **TASK_ID**
 
 ### Step 8: Get Tasks for Project (User A)
 
@@ -226,29 +233,28 @@ These steps verify **authentication**, **authorization**, and **full CRUD functi
   - HTTP **200 OK**
   - Array of tasks belonging to **PROJECT_ID** returned
 
-
 ### Step 9: Register and Login User B (Authorization Test)
 
 This step verifies that users cannot access resources owned by other users.
 
 #### Register User B
 
-- **Method:** POST  
+- **Method:** POST
 - **URL:** `http://localhost:3000/api/auth/register`
 
 **Body (JSON):**
+
 ```json
 {
   "name": "User B",
   "email": "userb@test.com",
   "password": "123456"
 }
-
 ```
 
 - **Expected Result:**
- - HTTP **201 Created**
- - JWT token returned
+- HTTP **201 Created**
+- JWT token returned
 
 #### Login User B
 
@@ -265,8 +271,8 @@ This step verifies that users cannot access resources owned by other users.
 ```
 
 - **Expected Result:**
- - HTTP **200 OK**
- - Save the returned token as **TOKEN_B**
+- HTTP **200 OK**
+- Save the returned token as **TOKEN_B**
 
 **Note:** User B must use a **different email address** than User A.
 
@@ -279,7 +285,7 @@ This step verifies that users cannot access resources owned by other users.
 - `Authorization: Bearer TOKEN_B`
 
 - **Expected Result:**
- - HTTP **403 Forbidden**
+- HTTP **403 Forbidden**
 
 ### Step 11: User B Accesses User A Tasks
 
@@ -290,7 +296,7 @@ This step verifies that users cannot access resources owned by other users.
 - `Authorization: Bearer TOKEN_B`
 
 - **Expected Result:**
- - HTTP **403 Forbidden**
+- HTTP **403 Forbidden**
 
 ### Step 12: Update Task (User A)
 
@@ -310,8 +316,8 @@ This step verifies that users cannot access resources owned by other users.
 ```
 
 - **Expected Result:**
- - HTTP **200 OK**
- - Updated task returned
+- HTTP **200 OK**
+- Updated task returned
 
 ## Security Notes
 
