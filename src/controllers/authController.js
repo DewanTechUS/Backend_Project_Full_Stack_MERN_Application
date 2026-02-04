@@ -4,6 +4,11 @@ const { signToken } = require("../utils/token");
 // const asyncHandler = require("../middleware/asyncHandler");
 // Register a new user
 // POST /api/auth/register
+// colors for console logs
+const green = (text) => `\x1b[32m${text}\x1b[0m`;
+const red = (text) => `\x1b[31m${text}\x1b[0m`;
+const yellow = (text) => `\x1b[33m${text}\x1b[0m`;
+const blue = (text) => `\x1b[34m${text}\x1b[0m`;
 async function register(req, res, next) {
   try {
     const { name, email, password } = req.body;
@@ -85,5 +90,5 @@ async function deleteMe(req, res, next) {
     next(err);
   }
 }
-
+console.log(green("YES - Auth controller loaded successfully"));
 module.exports = { register, login, deleteMe };
