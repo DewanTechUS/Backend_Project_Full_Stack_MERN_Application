@@ -47,6 +47,96 @@ The API is designed to be tested using **Postman** or any standard REST client.
 - **dotenv** – environment variable management
 - **cors** – Cross-Origin Resource Sharing configuration
 
+## Environment Variables Setup (.env)
+
+- This backend requires a .env file to run correctly.
+- The .env file stores sensitive configuration values and must never be committed to GitHub.
+
+## Step 1: Create the .env File
+
+1. Open the project root folder
+2. Navigate into the folder/root directory (same folder as server.js)
+3. Create a file named exactly:
+
+- .env
+- The .env file is ignored by Git via .gitignore.
+
+## Step 2: Required Environment Variables
+
+### Add the following variables to backend/.env:
+
+- PORT=3000
+- MONGO_URI=your_mongodb_connection_string
+- JWT_SECRET=your_jwt_secret
+- CLIENT_ORIGIN=http://localhost:3001
+
+## Step 3: MongoDB Connection String (MONGO_URI)
+
+- This project supports MongoDB Atlas or local MongoDB.
+- MongoDB Atlas (Recommended)
+
+1. Visit https://www.mongodb.com/atlas/database
+2. Create or log in to your account
+3. Create a free cluster
+4. Go to Database Access and create a database user
+5. Go to Network Access and allow IP 0.0.0.0/0
+6. In Clusters, click Connect
+7. Choose “Connect your application”
+8. Copy the connection string
+
+### Example format:
+
+- mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/protasker
+
+### Example .env value:
+
+- MONGO_URI=mongodb+srv://myUser:myPassword@cluster0.xxxxx.mongodb.net/protasker
+
+## Step 4: JWT Secret (JWT_SECRET)
+
+- JWT_SECRET is used to sign and verify authentication tokens.
+
+## Generate a secure secret by running this command inside the root folder: (In Terminal)
+
+- node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+## Copy the output and add it to .env:
+
+- JWT_SECRET=generated_random_string_here
+- Do not share this value publicly.
+
+## Step 5: Client Origin (CLIENT_ORIGIN)
+
+- CLIENT_ORIGIN defines which frontend is allowed to access the backend.
+
+## Local development:
+
+- CLIENT_ORIGIN=http://localhost:3001
+
+## Production:
+
+- CLIENT_ORIGIN=https://frontend-domain.com
+
+## Step 6: Restart the Server
+
+- After creating or editing the .env file, restart the backend:
+- npm run dev
+
+## Step 7: Verify the Setup
+
+- Check the health endpoint:
+- GET http://localhost:3000/health
+- Expected response:
+- { "status": "ok" }
+
+## Step 8: If .env Is Missing or Incorrect
+
+- MongoDB connection will fail
+- Authentication will fail
+- Protected routes will return errors
+- Backend may crash on startup
+- Using a .env file ensures secrets are not hardcoded and follows production best practices.
+
 ## Project Structure (High Level)
 
 - **server.js**  
