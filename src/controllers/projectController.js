@@ -2,7 +2,11 @@
 // Rule: user can ONLY access projects they own
 // Uses Project model
 const Project = require("../models/Project");
-
+// colors for console logs
+const green = (text) => `\x1b[32m${text}\x1b[0m`;
+const red = (text) => `\x1b[31m${text}\x1b[0m`;
+const yellow = (text) => `\x1b[33m${text}\x1b[0m`;
+const blue = (text) => `\x1b[34m${text}\x1b[0m`;
 // POST /api/projects
 async function createProject(req, res, next) {
   try {
@@ -53,7 +57,7 @@ async function getProjectById(req, res, next) {
     if (project.owner.toString() !== req.user.userId) {
       res.status(403);
       throw new Error(
-        "Forbidden: Access denied. You do not have permission to access this project."
+        "Forbidden: Access denied. You do not have permission to access this project.",
       );
     }
 
@@ -76,7 +80,7 @@ async function updateProject(req, res, next) {
     if (project.owner.toString() !== req.user.userId) {
       res.status(403);
       throw new Error(
-        "Forbidden: Access denied. You do not have permission to access this project."
+        "Forbidden: Access denied. You do not have permission to access this project.",
       );
     }
 
@@ -109,7 +113,7 @@ async function deleteProject(req, res, next) {
     if (project.owner.toString() !== req.user.userId) {
       res.status(403);
       throw new Error(
-        "Forbidden: Access denied. You do not have permission to access this project."
+        "Forbidden: Access denied. You do not have permission to access this project.",
       );
     }
 
@@ -119,7 +123,7 @@ async function deleteProject(req, res, next) {
     next(err);
   }
 }
-
+console.log(green("YES - Project controller loaded successfully"));
 module.exports = {
   createProject,
   getMyProjects,
