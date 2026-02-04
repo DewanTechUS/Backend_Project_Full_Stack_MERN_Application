@@ -5,17 +5,26 @@ function notFound(req, res, next) {
   res.status(404);
   return next(new Error(`Not Found: ${req.originalUrl}`));
 }
-
+// General error handler
+// Sends JSON response with error message and appropriate status code
+// I use 4 arguments to identify it as an error handler middleware
 function errorHandler(err, req, res, next) {
-  // If headers already sent, let Express handle it // avoid "Headers already sent" error
-  // using 4-argument signature to identify error-handling middleware
+  // eslint-disable-line no-unused-vars
   if (res.headersSent) return next(err);
 
-  const statusCode = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
+  // Mongoose validation error
+  if (err.name === "ValidationError") {
+    return res.status(400).json({
+      message: Object.values(err.errors)[0].message,
+    });
+  }
+  // Mongoose bad ObjectId
+  const statusCode =
+    res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
 
   return res.status(statusCode).json({
     message: err.message || "Server Error",
   });
 }
 
-module.exports = { notFound, errorHandler }; 
+module.exports = { notFound, errorHandler };
