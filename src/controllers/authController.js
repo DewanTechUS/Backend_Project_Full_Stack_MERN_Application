@@ -1,76 +1,89 @@
-// Handles register/login and returns JWT token
-// Uses User model and token utility
-// we can add more fields as needed
 const User = require("../models/User");
+const Project = require("../models/Project");
 const { signToken } = require("../utils/token");
-
-// Register new user
-async function register(req, res) {
+// const asyncHandler = require("../middleware/asyncHandler");
+// Register a new user
+// POST /api/auth/register
+async function register(req, res, next) {
   try {
     const { name, email, password } = req.body;
-    console.log("Register request body:", req.body);
-    if (!name || !email || !password) {
-      return res
-        .status(400)
-        .json({ message: "name, email, password are required" });
-    }
 
-    // Check if user exists
+    if (!name || !email || !password) {
+      res.status(400);
+      throw new Error("name, email, password are required");
+    }
+// Check if user exists
     const existing = await User.findOne({ email });
     if (existing) {
-      return res.status(400).json({ message: "Email already exists" });
+      res.status(400);
+      throw new Error("Email already exists");
     }
-
-    // Create user and generate token
+// Create user
     const user = await User.create({ name, email, password });
     const token = signToken(user._id);
 
-    return res.status(201).json({
+    res.status(201).json({
       message: "Registered successfully",
       token,
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (err) {
-    console.error("Register error:", err);
-    return res.status(500).json({ message: "Server error" });
+    next(err);
   }
 }
-
-// Login user
-async function login(req, res) {
+//Login user
+async function login(req, res, next) {
   try {
     const { email, password } = req.body;
-    console.log("Login request body:", req.body);
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "email and password are required" });
-    }
 
-    // Find user and validate password
+    if (!email || !password) {
+      res.status(400);
+      throw new Error("email and password are required");
+    }
+// Find user
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      res.status(401);
+      throw new Error("Invalid credentials");
     }
-
-    // Check password
+ // Check password
     const ok = await user.matchPassword(password);
     if (!ok) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      res.status(401);
+      throw new Error("Invalid credentials");
     }
-
-    // Generate token
+// Generate token
     const token = signToken(user._id);
 
-    return res.json({
+    res.json({
       message: "Logged in successfully",
       token,
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (err) {
-    console.error("Login error:", err);
-    return res.status(500).json({ message: "Server error" });
+    next(err);
+  }
+}
+// Delete current user
+async function deleteMe(req, res, next) {
+  try {
+    const userId = req.user?.userId || req.user?.id;
+
+    if (!userId) {
+      res.status(401);
+      throw new Error("Not authorized");
+    }
+
+    // delete projects and tasks if tasks embedded in projects
+    await Project.deleteMany({ owner: userId });
+
+    // delete user
+    await User.findByIdAndDelete(userId);
+
+    res.json({ message: "Account deleted successfully" });
+  } catch (err) {
+    next(err);
   }
 }
 
-module.exports = { register, login };
+module.exports = { register, login, deleteMe };
