@@ -1,10 +1,11 @@
 // Task CRUD under a project
-//   user must OWN the parent project to manage tasks
+// user must OWN the parent project to manage tasks
 // Uses Project and Task models
+// nested crud for tasks under projects
 const Project = require("../models/Project");
 const Task = require("../models/Task");
 
-// Helper: confirm project exists and belongs to logged-in user
+// Helper confirm project exists and belongs to logged-in user
 async function verifyProjectOwner(projectId, userId) {
   const project = await Project.findById(projectId);
 
@@ -30,7 +31,7 @@ async function createTask(req, res, next) {
       throw new Error(check.message);
     }
 
-    const { title, description, status } = req.body;
+    const { title, description, status, priority } = req.body; // added priority
     if (!title) {
       res.status(400);
       throw new Error("Task title is required");
@@ -42,6 +43,7 @@ async function createTask(req, res, next) {
       title,
       description: description || "",
       status: status || "To Do",
+      priority: priority || "medium", // added priority
     });
 
     res.status(201).json(task);
@@ -94,10 +96,14 @@ async function updateTask(req, res, next) {
       res.status(404);
       throw new Error("Task not found");
     }
-// Update fields if provided in body // save updated task // i can add more fields as needed based on schema
+
+    // Update fields if provided in body // save updated task // i can add more fields as needed based on schema
     task.title = req.body.title ?? task.title;
     task.description = req.body.description ?? task.description;
     task.status = req.body.status ?? task.status;
+
+    // added: update priority if provided
+    if (req.body.priority) task.priority = req.body.priority;
 
     const updated = await task.save();
     res.json(updated);
