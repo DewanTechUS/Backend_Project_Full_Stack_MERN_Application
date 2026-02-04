@@ -4,7 +4,11 @@
 // nested crud for tasks under projects
 const Project = require("../models/Project");
 const Task = require("../models/Task");
-
+// colors for console logs
+const green = (text) => `\x1b[32m${text}\x1b[0m`;
+const red = (text) => `\x1b[31m${text}\x1b[0m`;
+const yellow = (text) => `\x1b[33m${text}\x1b[0m`;
+const blue = (text) => `\x1b[34m${text}\x1b[0m`;
 // Helper confirm project exists and belongs to logged-in user
 async function verifyProjectOwner(projectId, userId) {
   const project = await Project.findById(projectId);
@@ -139,5 +143,5 @@ async function deleteTask(req, res, next) {
     next(err);
   }
 }
-
+console.log(green("YES - Task controller loaded successfully"));
 module.exports = { createTask, getTasks, updateTask, deleteTask };
