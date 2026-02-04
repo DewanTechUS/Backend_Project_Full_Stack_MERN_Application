@@ -1,12 +1,13 @@
 // Project CRUD with ownership authorization
-// Rule: user can ONLY access projects they own // 
+// Rule: user can ONLY access projects they own
 // Uses Project model
 const Project = require("../models/Project");
 
 // POST /api/projects
 async function createProject(req, res, next) {
   try {
-    const { name, description } = req.body;
+    const { name, description, priority, dueDate } = req.body; // added dueDate // destructuring
+
     if (!name) {
       res.status(400);
       throw new Error("Project name is required");
@@ -16,6 +17,8 @@ async function createProject(req, res, next) {
       owner: req.user.userId,
       name,
       description: description || "",
+      priority: priority || "medium",
+      dueDate: dueDate ? new Date(dueDate) : null, // added dueDate // parsing to Date or null
     });
 
     res.status(201).json(project);
@@ -27,7 +30,10 @@ async function createProject(req, res, next) {
 // GET /api/projects (only my projects)
 async function getMyProjects(req, res, next) {
   try {
-    const projects = await Project.find({ owner: req.user.userId }).sort({ createdAt: -1 });
+    const projects = await Project.find({ owner: req.user.userId }).sort({
+      createdAt: -1,
+    });
+
     res.json(projects);
   } catch (err) {
     next(err);
@@ -46,7 +52,9 @@ async function getProjectById(req, res, next) {
 
     if (project.owner.toString() !== req.user.userId) {
       res.status(403);
-      throw new Error("Forbidden: Access denied. You do not have permission to access this project.");
+      throw new Error(
+        "Forbidden: Access denied. You do not have permission to access this project."
+      );
     }
 
     res.json(project);
@@ -67,11 +75,19 @@ async function updateProject(req, res, next) {
 
     if (project.owner.toString() !== req.user.userId) {
       res.status(403);
-      throw new Error("Forbidden: Access denied. You do not have permission to access this project.");
+      throw new Error(
+        "Forbidden: Access denied. You do not have permission to access this project."
+      );
     }
 
-    project.name = req.body.name ?? project.name;
-    project.description = req.body.description ?? project.description;
+    const { name, description, priority, dueDate } = req.body; // added dueDate // destructuring
+
+    project.name = name ?? project.name;
+    project.description = description ?? project.description;
+
+    if (priority) project.priority = priority;
+    if (dueDate !== undefined)
+      project.dueDate = dueDate ? new Date(dueDate) : null; // added dueDate // parsing to Date or null
 
     const updated = await project.save();
     res.json(updated);
@@ -92,7 +108,9 @@ async function deleteProject(req, res, next) {
 
     if (project.owner.toString() !== req.user.userId) {
       res.status(403);
-      throw new Error("Forbidden: Access denied. You do not have permission to access this project.");
+      throw new Error(
+        "Forbidden: Access denied. You do not have permission to access this project."
+      );
     }
 
     await project.deleteOne();
